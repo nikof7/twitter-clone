@@ -1,6 +1,6 @@
 const { mongoose, Schema } = require("../config/db");
 
-const articleSchema = new Schema(
+const tweetSchema = new Schema(
   {
     content: { type: String, maxLength: 140, minLength: 1 },
     user: { type: Schema.Types.ObjectId, ref: "User" },
@@ -11,6 +11,6 @@ const articleSchema = new Schema(
   },
 );
 
-const Article = mongoose.model("Article", articleSchema); // Entre comillas se coloca el nombre del modelo en mayúscula y en singular.
+const Tweet = mongoose.model("Tweet", tweetSchema);
 
-module.exports = Article;
+module.exports = Tweet;
