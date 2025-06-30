@@ -1,7 +1,20 @@
-const User = require("../models/User");
+const Tweet = require("../models/Tweet");
 
 // Display a listing of the resource.
-async function index(req, res) {}
+async function index(req, res) {
+  try {
+    const tweets = await Tweet.find().sort({"createdAt": -1}).limit(20).populate("likes" , "username");
+
+
+    //const hashe;dPassword = await bcrypt.hash(password, 10);
+
+    res.json({tweets});
+  } catch (error) {
+    console.error("Error al crear el usuario:", error);
+    res.status(500).send("Error interno del servidor");
+  }
+}
+
 
 // Display the specified resource.
 async function show(req, res) {}
@@ -12,8 +25,8 @@ async function store(req, res) {
     const body = req.body;
     //const hashe;dPassword = await bcrypt.hash(password, 10);
     console.log(body);
-    const user = new User(body);
-    await user.save()
+    const tweet = new Tweet(body);
+    await tweet.save()
 
     res.json({msj : "ok"});
   } catch (error) {
