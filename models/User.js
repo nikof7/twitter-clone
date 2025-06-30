@@ -1,10 +1,15 @@
-const { mongoose, Schema } = require("../db");
+const { mongoose, Schema } = require("../config/db");
 
 const userSchema = new Schema(
   {
     firstname: String,
     lastname: String,
-    age: Schema.Types.Number,
+    username: { type: String, trim: required, required: true },
+    password: { type: String, required: true },
+    email: { type: String, trim: required, required: true },
+    description: String,
+    avatar: { type: String, default: "/public/img/avatar.png" },
+    tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   },
   {
     timestamps: true,

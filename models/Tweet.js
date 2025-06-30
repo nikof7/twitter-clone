@@ -1,9 +1,10 @@
-const { mongoose, Schema } = require("../db");
+const { mongoose, Schema } = require("../config/db");
 
 const articleSchema = new Schema(
   {
-    title: String,
-    content: String,
+    content: { type: String, maxLength: 140, minLength: 1 },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
+    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
