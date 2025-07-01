@@ -8,8 +8,15 @@ const tweetSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    id: false,
   },
 );
+
+tweetSchema.virtual("likesCount").get(function () {
+  return this.likes.length;
+});
 
 const Tweet = mongoose.model("Tweet", tweetSchema);
 

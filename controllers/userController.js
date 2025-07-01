@@ -4,10 +4,10 @@ const formidable = require("formidable");
 
 async function show(req, res) {
   try {
-    console.log(req.params);
     const user = await User.findOne({ username: req.params.username })
       .select("-password")
-      .populate("tweets", ["content", "likes"]);
+      .populate("tweets", ["content", "likes", "likesCount"]);
+    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
     res.status(200).json({ user });
   } catch (error) {
     console.log(error);
