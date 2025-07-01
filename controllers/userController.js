@@ -29,8 +29,13 @@ async function store(req, res) {
     try {
       const { firstname, lastname, username, email } = fields;
       const password = await bcrypt.hash(fields.password, 10);
-      const image = files.image.newFilename;
-      const user = new User({ firstname, lastname, username, password, email, image });
+      const userData = { firstname, lastname, username, email, password };
+
+      if (files.image) {
+        userData.image = files.image.newFilename;
+      }
+      console.log(userData);
+      const user = new User(userData);
       await user.save();
       res.status(201).json({ msg: "Usuario creado correctamente" });
     } catch (error) {
