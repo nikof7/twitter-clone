@@ -16,13 +16,31 @@ async function store(req, res) {
   try {
     const { content, user } = req.body;
 
-    const tweet = new Tweet({ content, user });
+    if (!content || typeof content !== "string" || content.trim() === "") {
+      return res.status(400).json({ error: "El contenido del tweet es obligatorio" });
+    }
+
+    if (content.length > 140) {
+      return res.status(400).json({ error: "El tweet no puede superar los 140 caracteres" });
+    }
+
+    if (!user || typeof user !== "string") {
+      return res.status(400).json({ error: "Debe especificarse un usuario válido" });
+    }
+
+    const tweet = new Tweet({
+      content: content.trim(),
+      user,
+      createdAt: new Date(),
+      likes: 0,
+    });
+
     await tweet.save();
 
-    res.status(201).json({ msg: "Tweet creado correctamente" });
+    res.status(201).json({ msg: "Tweet creado correctamente", tweet });
   } catch (error) {
     console.error("Error al crear el tweet:", error);
-    res.status(500).send("Error interno del servidor");
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 }
 
