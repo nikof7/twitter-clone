@@ -2,12 +2,12 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const formidable = require("formidable");
 
-async function index(req, res) {}
-
 async function show(req, res) {
   try {
-    console.log(req.auth);
-    const user = await User.findOne({ username: req.params.username }).select("-password");
+    console.log(req.params);
+    const user = await User.findOne({ username: req.params.username })
+      .select("-password")
+      .populate("tweets", ["content", "likes"]);
     res.status(200).json({ user });
   } catch (error) {
     console.log(error);
@@ -40,14 +40,7 @@ async function store(req, res) {
   });
 }
 
-async function update(req, res) {}
-
-async function destroy(req, res) {}
-
 module.exports = {
-  index,
   show,
   store,
-  update,
-  destroy,
 };
