@@ -1,35 +1,27 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-// Display a listing of the resource.
 async function index(req, res) {}
 
-// Display the specified resource.
 async function show(req, res) {}
 
-// Store a newly created resource in storage.
 async function store(req, res) {
   try {
-    const body = req.body;
-    //const hashe;dPassword = await bcrypt.hash(password, 10);
-    console.log(body);
-    const user = new User(body);
-    await user.save()
+    const { firstname, lastname, username, password, email } = req.body;
+    password = await bcrypt.hash(password, 10);
+    const user = new User({ firstname, lastname, username, password, email });
+    await user.save();
 
-    res.json({msj : "ok"});
+    res.json({ msg: "ok" });
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     res.status(500).send("Error interno del servidor");
   }
 }
 
-// Update the specified resource in storage.
 async function update(req, res) {}
 
-// Remove the specified resource from storage.
 async function destroy(req, res) {}
-
-// Otros handlers...
-// ...
 
 module.exports = {
   index,

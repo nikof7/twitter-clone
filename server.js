@@ -15,9 +15,8 @@ app.listen(port, () => {
   console.log(`[Express] Ingresar a http://localhost:${port}.\n`);
 });
 
-// Esto se ejecuta cuando se "apaga" la app.
 process.on("SIGINT", function () {
-  const { mongoose } = require("./db");
+  const { mongoose } = require("./config/db");
   mongoose.connection.close(function () {
     console.log("Mongoose default connection is disconnected due to application termination.\n");
     process.exit(0);

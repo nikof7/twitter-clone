@@ -1,48 +1,44 @@
 const Tweet = require("../models/Tweet");
 
-// Display a listing of the resource.
 async function index(req, res) {
   try {
-    const tweets = await Tweet.find().sort({"createdAt": -1}).limit(20).populate("likes" , "username");
+    const tweets = await Tweet.find().sort({ createdAt: -1 }).limit(20);
 
-
-    //const hashe;dPassword = await bcrypt.hash(password, 10);
-
-    res.json({tweets});
+    res.json({ tweets });
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     res.status(500).send("Error interno del servidor");
   }
 }
 
-
-// Display the specified resource.
 async function show(req, res) {}
 
-// Store a newly created resource in storage.
 async function store(req, res) {
   try {
-    const body = req.body;
-    //const hashe;dPassword = await bcrypt.hash(password, 10);
-    console.log(body);
-    const tweet = new Tweet(body);
-    await tweet.save()
+    const { content, user } = req.body;
 
-    res.json({msj : "ok"});
+    const tweet = new Tweet({ content, user });
+    await tweet.save();
+
+    res.json({ msg: "ok" });
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     res.status(500).send("Error interno del servidor");
   }
 }
 
-// Update the specified resource in storage.
 async function update(req, res) {}
 
-// Remove the specified resource from storage.
-async function destroy(req, res) {}
-
-// Otros handlers...
-// ...
+async function destroy(req, res) {
+  try {
+    const { id } = req.params;
+    await Tweet.findByIdAndDelete(id);
+    return res.json({ msg: "Deleted" });
+  } catch (error) {
+    console.log(error);
+    res.json({ msg: error });
+  }
+}
 
 module.exports = {
   index,
