@@ -5,10 +5,8 @@ async function index(req, res) {}
 
 async function show(req, res) {
   try {
-    console.log(req.params);
     const user = await User.findOne({ username: req.params.username }).select("-password");
-
-    res.json(user);
+    res.status(200).json({ user });
   } catch (error) {
     console.log(error);
   }
@@ -21,7 +19,7 @@ async function store(req, res) {
     const user = new User({ firstname, lastname, username, password, email });
     await user.save();
 
-    res.json({ msg: "ok" });
+    res.status(201).json({ msg: "Usuario creado correctamente" });
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     res.status(500).send("Error interno del servidor");

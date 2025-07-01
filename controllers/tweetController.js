@@ -3,10 +3,9 @@ const Tweet = require("../models/Tweet");
 async function index(req, res) {
   try {
     const tweets = await Tweet.find().sort({ createdAt: -1 }).limit(20);
-
-    res.json({ tweets });
+    res.status(200).json({ tweets });
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    console.error("Error al obtener los tweets:", error);
     res.status(500).send("Error interno del servidor");
   }
 }
@@ -20,9 +19,9 @@ async function store(req, res) {
     const tweet = new Tweet({ content, user });
     await tweet.save();
 
-    res.json({ msg: "ok" });
+    res.status(201).json({ msg: "Tweet creado correctamente" });
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    console.error("Error al crear el tweet:", error);
     res.status(500).send("Error interno del servidor");
   }
 }
@@ -35,22 +34,22 @@ async function update(req, res) {
   if (found) {
     tweet.likes = tweet.likes.filter((likerId) => String(likerId) != userId);
     await tweet.save();
-    res.json({ tweet });
+    res.status(200).json({ tweet });
   }
 
   tweet.likes.push(userId);
   await tweet.save();
-  res.json({ tweet });
+  res.status(200).json({ tweet });
 }
 
 async function destroy(req, res) {
   try {
     const { id } = req.params;
     await Tweet.findByIdAndDelete(id);
-    return res.json({ msg: "Deleted" });
+    return res.status(200).json({ msg: "Tweet eliminado correctamente" });
   } catch (error) {
     console.log(error);
-    res.json({ msg: error });
+    res.status(500).json({ error });
   }
 }
 
