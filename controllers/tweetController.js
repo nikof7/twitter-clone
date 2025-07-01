@@ -27,7 +27,21 @@ async function store(req, res) {
   }
 }
 
-async function update(req, res) {}
+async function update(req, res) {
+  const userId = req.body.user;
+  const tweet = await Tweet.findById(req.params.id);
+  const found = tweet.likes.find((element) => String(element) === userId);
+
+  if (found) {
+    tweet.likes = tweet.likes.filter((element) => String(element) != userId);
+    await tweet.save();
+    res.json({ tweet });
+  }
+
+  tweet.likes.push(userId);
+  await tweet.save();
+  res.json({ tweet });
+}
 
 async function destroy(req, res) {
   try {
