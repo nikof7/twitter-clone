@@ -8,7 +8,7 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     email: { type: String, trim: true, required: true },
     description: String,
-    avatar: { type: String, default: "/public/img/avatar.png" },
+    image: { type: String, default: "avatar.png" },
     tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   },
   {
