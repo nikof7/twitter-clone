@@ -5,6 +5,7 @@ async function index(req, res) {}
 
 async function show(req, res) {
   try {
+    console.log(req.auth);
     const user = await User.findOne({ username: req.params.username }).select("-password");
     res.status(200).json({ user });
   } catch (error) {
@@ -14,7 +15,7 @@ async function show(req, res) {
 
 async function store(req, res) {
   try {
-    const { firstname, lastname, username, password, email } = req.body;
+    let { firstname, lastname, username, password, email } = req.body;
     password = await bcrypt.hash(password, 10);
     const user = new User({ firstname, lastname, username, password, email });
     await user.save();
