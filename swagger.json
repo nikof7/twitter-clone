@@ -1,0 +1,198 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Twitter Clone",
+    "version": "1.0.0",
+    "description": "Documentación de la API de Twitter Clone"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Crear nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": { "type": "string" },
+                  "lastname": { "type": "string" },
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                },
+                "required": ["username", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuario creado correctamente" }
+        }
+      },
+      "get": {
+        "summary": "Obtener todos los usuarios",
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{username}": {
+      "get": {
+        "summary": "Obtener usuario por username",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Usuario no encontrado" }
+        }
+      }
+    },
+    "/tweets": {
+      "post": {
+        "summary": "Crear nuevo tweet",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "user"],
+                "properties": {
+                  "content": { "type": "string", "maxLength": 140 },
+                  "user": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tweet creado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": { "type": "string" },
+                    "tweet": { "$ref": "#/components/schemas/Tweet" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tokens": {
+      "post": {
+        "summary": "Obtener token de autenticación",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token generado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Credenciales inválidas" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserInput": {
+        "type": "object",
+        "required": ["username", "email"],
+        "properties": {
+          "username": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "firstname": { "type": "string" },
+          "lastname": { "type": "string" },
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "image": { "type": "string" },
+          "tweets": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Tweet" }
+          }
+        }
+      },
+      "TweetInput": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string" },
+          "userId": { "type": "string" }
+        }
+      },
+      "Tweet": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "content": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "userId": { "type": "string" }
+        }
+      }
+    }
+  }
+}
