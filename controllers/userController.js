@@ -3,7 +3,16 @@ const User = require("../models/User");
 
 async function index(req, res) {}
 
-async function show(req, res) {}
+async function show(req, res) {
+  try {
+    console.log(req.params);
+    const user = await User.findOne({ username: req.params.username }).select("-password");
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function store(req, res) {
   try {
