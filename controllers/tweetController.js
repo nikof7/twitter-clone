@@ -30,10 +30,10 @@ async function store(req, res) {
 async function update(req, res) {
   const userId = req.body.user;
   const tweet = await Tweet.findById(req.params.id);
-  const found = tweet.likes.find((element) => String(element) === userId);
+  const found = tweet.likes.find((likerId) => String(likerId) === userId);
 
   if (found) {
-    tweet.likes = tweet.likes.filter((element) => String(element) != userId);
+    tweet.likes = tweet.likes.filter((likerId) => String(likerId) != userId);
     await tweet.save();
     res.json({ tweet });
   }
