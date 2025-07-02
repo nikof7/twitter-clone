@@ -54,7 +54,7 @@ async function update(req, res) {
     await tweet.save();
     return res.status(200).json({ tweet });
   } catch (error) {
-    res.status(200).json({ msg: error });
+    return res.status(200).json({ msg: error });
     console.log(error);
   }
 }
