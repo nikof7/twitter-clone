@@ -23,6 +23,7 @@ async function store(req, res) {
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
+      console.log(fields);
       console.error("Error al procesar el formulario: ", err);
       return res.status(400).json({ msg: "Error interno del servidor" });
     }
@@ -36,7 +37,7 @@ async function store(req, res) {
         return res.status(400).json({ error: "El email o el nombre de usuario ya está en uso" });
       const password = await bcrypt.hash(fields.password, 10);
       const userData = { firstname, lastname, username, email, password };
-
+      console.log(files);
       if (files.image) userData.image = files.image.newFilename;
 
       await User.create(userData);
