@@ -29,8 +29,6 @@ async function store(req, res) {
     }
     try {
       const { firstname, lastname, username, email, password } = fields;
-      //const password = await bcrypt.hash(fields.password, 10);
-
       const existingUser = await User.findOne({ $or: [{ username }, { email }] });
       if (existingUser) return res.status(400).json({ msg: "Username o email ya en uso" });      
       const userData = { firstname, lastname, username, email, password };
