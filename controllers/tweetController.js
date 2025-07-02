@@ -1,5 +1,4 @@
 const Tweet = require("../models/Tweet");
-const mongoose = require("mongoose");
 
 async function index(req, res) {
   try {
@@ -41,18 +40,23 @@ async function store(req, res) {
 }
 
 async function update(req, res) {
-  const userId = req.auth.sub;
-  const tweet = await Tweet.findById(req.params.id);
-  const found = tweet.likes.includes(userId);
+  try {
+    const userId = req.auth.sub;
+    const tweet = await Tweet.findById(req.params.id);
+    const found = tweet.likes.includes(userId);
 
-  if (found) {
-    tweet.likes.pull(userId);
-  } else {
-    tweet.likes.push(userId);
+    if (found) {
+      tweet.likes.pull(userId);
+    } else {
+      tweet.likes.push(userId);
+    }
+
+    await tweet.save();
+    return res.status(200).json({ tweet });
+  } catch (error) {
+    res.status(200).json({ msg: error });
+    console.log(error);
   }
-
-  await tweet.save();
-  return res.status(200).json({ tweet });
 }
 
 async function destroy(req, res) {
