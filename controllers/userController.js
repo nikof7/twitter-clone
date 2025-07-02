@@ -29,15 +29,9 @@ async function store(req, res) {
       return res.status(400).json({ msg: "Error interno del servidor" });
     }
     try {
-      const { firstname, lastname, username, email } = fields;
-
-      const existingUser = await User.findOne({
-        $or: [{ email }, { username }],
-      });
-
-      if (existingUser)
-        return res.status(400).json({ error: "El email o el nombre de usuario ya está en uso" });
-      const password = await bcrypt.hash(fields.password, 10);
+      const { firstname, lastname, username, email, password } = fields;
+      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+      if (existingUser) return res.status(400).json({ msg: "Username o email ya en uso" });
       const userData = { firstname, lastname, username, email, password };
 
       if (files.image) userData.image = files.image.newFilename;
