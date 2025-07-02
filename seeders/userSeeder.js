@@ -18,7 +18,8 @@ module.exports = async () => {
       firstname,
       lastname,
       username,
-      email: username + "@gmail.com",
+      //email: username + "@gmail.com",
+      email: faker.internet.email(),
       password: hashedPassword,
       bio: faker.lorem.paragraph(),
     });

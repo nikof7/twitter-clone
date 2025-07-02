@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const formidable = require("formidable");
+const Follow = require("../models/Follows");
 
 async function show(req, res) {
   try {
@@ -33,11 +34,12 @@ async function store(req, res) {
       const existingUser = await User.findOne({
         $or: [{ email }, { username }],
       });
+
       if (existingUser)
         return res.status(400).json({ error: "El email o el nombre de usuario ya está en uso" });
       const password = await bcrypt.hash(fields.password, 10);
       const userData = { firstname, lastname, username, email, password };
-      console.log(files);
+
       if (files.image) userData.image = files.image.newFilename;
 
       await User.create(userData);
@@ -49,7 +51,25 @@ async function store(req, res) {
   });
 }
 
+async function toggleFollowUser(req, res) {
+  const userId = req.auth.sub;
+  const followingId = req.params.id;
+
+  if (userId === followingId) return res.json({ msg: "No te podes seguir a vos mismo" });
+
+  const existingFollow = await Follow.findOne({ follower: userId, following: followingId });
+
+  if (existingFollow) {
+    await existingFollow.deleteOne();
+    return res.status(200).json({ msg: "Lo dejaste de seguir" });
+  } else {
+    await Follow.create({ follower: userId, following: followingId });
+    return res.status(200).json({ msg: "Lo comenzaste a seguir" });
+  }
+}
+
 module.exports = {
   show,
   store,
+  toggleFollowUser,
 };

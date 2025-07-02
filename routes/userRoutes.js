@@ -8,5 +8,6 @@ router.post("/", userController.store);
 
 router.use(authMiddleware);
 router.get("/:username", userController.show);
+router.post("/:id/following", userController.toggleFollowUser);
 
 module.exports = router;

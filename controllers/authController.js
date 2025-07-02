@@ -3,7 +3,13 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 async function login(req, res) {
-  const user = await User.findOne({ email: req.body.email });
+  let user;
+
+  if (req.body.email) {
+    user = await User.findOne({ email: req.body.email });
+  } else if (req.body.username) {
+    user = await User.findOne({ username: req.body.username });
+  }
 
   if (!user) return res.json({ msg: "Credenciales inválidas" });
 
