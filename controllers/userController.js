@@ -24,23 +24,20 @@ async function store(req, res) {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       console.error("Error al procesar el formulario: ", err);
-      return res.status(400).send("Error al procesar el formulario");
+      return res.status(400).json({ msg: "Error interno del servidor" });
     }
     try {
       const { firstname, lastname, username, email } = fields;
       const password = await bcrypt.hash(fields.password, 10);
       const userData = { firstname, lastname, username, email, password };
 
-      if (files.image) {
-        userData.image = files.image.newFilename;
-      }
-      console.log(userData);
-      const user = new User(userData);
-      await user.save();
-      res.status(201).json({ msg: "Usuario creado correctamente" });
+      if (files.image) userData.image = files.image.newFilename;
+
+      await new User.create(userData);
+      return res.status(201).json({ msg: "Usuario creado correctamente" });
     } catch (error) {
       console.error("Error al crear el usuario:", error);
-      res.status(500).send("Error interno del servidor");
+      return res.status(500).json({ msg: "Error interno del servidor" });
     }
   });
 }

@@ -6,14 +6,20 @@ const bcrypt = require("bcrypt");
 module.exports = async () => {
   await mongoose.connection.dropCollection("users");
   const users = [];
-
+  const hashedPassword = await bcrypt.hash("1234", 10);
   for (let i = 0; i < 100; i++) {
+    const firstname = faker.person.firstName();
+    const lastname = faker.person.lastName();
+    const username = (firstname + lastname + faker.number.int({ min: 500, max: 1000 })).replace(
+      " ",
+      "",
+    );
     users.push({
-      firstname: faker.person.firstName(),
-      lastname: faker.person.lastName(),
-      username: faker.internet.username(),
-      email: faker.internet.email(),
-      password: await bcrypt.hash("1234", 10),
+      firstname,
+      lastname,
+      username,
+      email: username + "@gmail.com",
+      password: hashedPassword,
       bio: faker.lorem.paragraph(),
     });
   }

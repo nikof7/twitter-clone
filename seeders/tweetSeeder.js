@@ -11,17 +11,17 @@ module.exports = async () => {
   const tweets = [];
 
   for (let i = 0; i < 500; i++) {
-    const user = users[faker.number.int({ min: 0, max: 99 })];
+    const randomUser = users[faker.number.int({ min: 0, max: 99 })];
 
     const tweet = new Tweet({
       content: faker.lorem.text(70).slice(0, 140),
-      user,
+      user: randomUser._id,
       likes: faker.helpers.arrayElements(users, { min: 0, max: 40 }),
     });
 
     tweets.push(tweet);
-    user.tweets.push(tweet.id);
-    await user.save();
+    randomUser.tweets.push(tweet.id);
+    await randomUser.save();
   }
 
   await Tweet.insertMany(tweets);

@@ -1,4 +1,5 @@
 const Tweet = require("../models/Tweet");
+const mongoose = require("mongoose");
 
 async function index(req, res) {
   try {
@@ -12,7 +13,7 @@ async function index(req, res) {
 
 async function store(req, res) {
   try {
-    const user = req.auth.sub;
+    const userId = req.auth.sub;
     const { content } = req.body;
 
     if (!content || typeof content !== "string" || content.trim() === "") {
@@ -23,17 +24,14 @@ async function store(req, res) {
       return res.status(400).json({ error: "El tweet no puede superar los 140 caracteres" });
     }
 
-    if (!user || typeof user !== "string") {
+    if (!userId || typeof userId !== "string") {
       return res.status(400).json({ error: "Debe especificarse un usuario válido" });
     }
 
-    const tweet = new Tweet({
+    const tweet = await Tweet.create({
       content: content.trim(),
-      user,
-      createdAt: new Date(),
+      user: userId,
     });
-
-    await tweet.save();
 
     return res.status(201).json({ msg: "Tweet creado correctamente", tweet });
   } catch (error) {
@@ -45,15 +43,14 @@ async function store(req, res) {
 async function update(req, res) {
   const userId = req.auth.sub;
   const tweet = await Tweet.findById(req.params.id);
-  const found = tweet.likes.find((likerId) => String(likerId) === userId);
+  const found = tweet.likes.includes(userId);
 
   if (found) {
-    tweet.likes = tweet.likes.filter((likerId) => String(likerId) != userId);
-    await tweet.save();
-    return res.status(200).json({ tweet });
+    tweet.likes.pull(userId);
+  } else {
+    tweet.likes.push(userId);
   }
 
-  tweet.likes.push(userId);
   await tweet.save();
   return res.status(200).json({ tweet });
 }
